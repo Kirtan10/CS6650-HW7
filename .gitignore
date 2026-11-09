@@ -6,3 +6,4 @@ src/lambda/bootstrap
 locust/results/*.csv
 !locust/results/.gitkeep
 __pycache__/
+.DS_Store
