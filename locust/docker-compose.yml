@@ -1,0 +1,28 @@
+# Same master/worker setup as HW5/HW6.
+#
+#   ENDPOINT=sync  TEST=normal docker compose up    # Phase 1, normal
+#   ENDPOINT=sync  TEST=flash  docker compose up    # Phase 1, flash sale
+#   ENDPOINT=async TEST=flash  docker compose up    # Phases 3-5
+#
+# Open http://localhost:8089, Host = the alb_url from `terraform output`
+# (no port, no trailing slash), click Start. The shape stops the test itself.
+# 20 users is light: one worker is plenty.
+services:
+  master:
+    image: locustio/locust:2.29.1
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    environment: &env
+      - ENDPOINT=${ENDPOINT:-sync}
+      - TEST=${TEST:-normal}
+      - TIMEOUT=${TIMEOUT:-60}
+    command: -f /mnt/locust/locustfile.py --master --csv /mnt/locust/results/${ENDPOINT:-sync}_${TEST:-normal}
+
+  worker:
+    image: locustio/locust:2.29.1
+    volumes:
+      - ./:/mnt/locust
+    environment: *env
+    command: -f /mnt/locust/locustfile.py --worker --master-host master

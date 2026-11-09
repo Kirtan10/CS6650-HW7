@@ -1,0 +1,8 @@
+terraform/.terraform/
+terraform/*.tfstate*
+terraform/.terraform.lock.hcl
+terraform/build/
+src/lambda/bootstrap
+locust/results/*.csv
+!locust/results/.gitkeep
+__pycache__/
